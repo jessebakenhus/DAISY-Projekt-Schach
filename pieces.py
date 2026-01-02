@@ -110,7 +110,24 @@ class Pawn(Piece):  # Bauer
         
         :return: A list of reachable cells this pawn could move into.
         """
-        # TODO: Implement a method that returns all cells this piece can enter in its next move
+        reachable_cell = []
+
+        row, col = self.cell
+        # Bewegungsregel-> wenn in Reihe 7 (Index 6) dann 2 Felder
+        if self.can_enter_cell((row+1,col)):
+            reachable_cell.append((row+1,col))
+            if row == 6:
+                if self.can_enter_cell(row+2, col):
+                    reachable_cell.append(row+2, col)
+                    
+        # Diagonales Schlagen
+        if self.can_hit_on_cell((row+1,col-1)):
+            reachable_cell.append(row+1,col-1)       
+        
+        if self.can_hit_on_cell((row+1, col+1)):
+            reachable_cell.append(row+1, col+1)
+            
+        return reachable_cell
 
 
 class Rook(Piece):  # Turm
@@ -133,7 +150,43 @@ class Rook(Piece):  # Turm
 
         :return: A list of reachable cells this rook could move into.
         """
-        # TODO: Implement a method that returns all cells this piece can enter in its next move
+        reachable_cell = []
+        row, col = self.cell
+       
+        #Vertikal nach oben
+        while self.can_enter_cell(row+n,col):
+            n = 1
+            reachable_cell.append(row+n, col)
+            
+            n+= 1
+        if self.can_hit_on_cell(row+n+1,col):
+            reachable_cell.append(row+n+1,col)
+        #vertikal nach unten
+        
+        while self.can_enter_cell(row+n,col):
+            n = -1
+            reachable_cell.append(row+n, col)
+            n+= -1
+        if self.can_hit_on_cell(row+n-1,col):
+            reachable_cell.append(row+n-1,col)
+        #horizontal nach rechts
+        
+        while self.can_enter_cell(row,col+n):
+            n = 1
+            reachable_cell.append(row+n, col+n)
+            n+= 1
+        if self.can_hit_on_cell(row,col+n+1):
+            reachable_cell.append(row,col+n+1)
+        # horizontal nach links
+        
+        while self.can_enter_cell(row,col+n):
+            n = -1
+            reachable_cell.append(row+n, col+n)
+            n+= -1
+        if self.can_hit_on_cell(row,col+n-1):
+            reachable_cell.append(row,col+n-1)
+        
+        return reachable_cell
 
 
 class Knight(Piece):  # Springer

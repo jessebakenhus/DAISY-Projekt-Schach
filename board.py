@@ -292,7 +292,12 @@ class Board(BoardBase):
         being within the allowed range (0 to 7 inclusively).
         Don´t forget to handle the special case of "cell" being None. Return False in that case
         """
-        # TODO: Implement
+        if cell == None:
+            return False
+
+        row, col = cell #Teilt cell (Tupel) in zwei variablen auf -> Position 1 und 2 vom Tupel
+
+        return (row >= 0 and row <= 7) and (col >= 0 and col <= 7) #Prüft ob beide Position innerhalb von 0 und 7 liegen
 
     def cell_is_valid_and_empty(self, cell):
         """
@@ -302,7 +307,7 @@ class Board(BoardBase):
         You can use the "is_valid_cell()" Method to verify the cell is valid in the first place.
         If so, use "get_cell()" to retrieve the piece placed on it and return True if there is None
         """
-        # TODO: Implement
+        return self.is_valid_cell(cell) and self.get_cell(cell) == None
 
     def piece_can_enter_cell(self, piece, cell):
         """
@@ -319,7 +324,10 @@ class Board(BoardBase):
         If, however, there is another piece, it must be of opposing color. Check the other pieces "white" attribute and compare against
         the given piece "white" attribute.
         """
-        # TODO: Implement
+        if not self.is_valid_cell(cell):
+            return False
+        
+        return (self.get_cell(cell) == None) or (self.get_cell(cell).is_white() != piece.is_white()) 
  
 
     def piece_can_hit_on_cell(self, piece, cell):
@@ -337,4 +345,10 @@ class Board(BoardBase):
         If, however, there is another piece, it must be of opposing color. Check the other pieces "white" attribute and compare against
         the given piece "white" attribute.
         """
-        # TODO: Implement
+        if not self.is_valid_cell(cell=cell):
+            return False
+        
+        if self.get_cell(cell=cell) == None:
+            return False
+        
+        return self.get_cell(cell=cell).is_white() != piece.is_white()
