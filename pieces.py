@@ -210,6 +210,44 @@ class Knight(Piece):  # Springer
         :return: A list of reachable cells this knight could move into.
         """
         # TODO: Implement a method that returns all cells this piece can enter in its next move
+        row, col = self.cell
+        
+        reachable_cell = []
+
+        if self.is_valid_cell(row+2, col +1):
+            if self.cell_is_valid_and_empty(row+2, col +1) or self.piece_can_hit_on_cell(row+2, col +1):
+                reachable_cell.append((row+2, col +1))
+        
+        if self.is_valid_cell(row+2, col -1):
+            if self.cell_is_valid_and_empty(row+2, col -1) or self.piece_can_hit_on_cell(row+2, col -1):
+                reachable_cell.append((row+2, col -1))
+        
+        if self.is_valid_cell(row+1, col+2):
+            if self.cell_is_valid_and_empty(row+1, col+2) or self.piece_can_hit_on_cell(row+1, col+2):
+                reachable_cell.append((row+1, col+2))
+        
+        if self.is_valid_cell(row+1, col-2):
+            if self.cell_is_valid_and_empty(row+1, col-2) or self.piece_can_hit_on_cell(row+1, col-2):
+                reachable_cell.append((row+1, col-2))
+        
+        if self.is_valid_cell(row-1,col+2):
+            if self.cell_is_valid_and_empty(row-1,col+2) or self.piece_can_hit_on_cell(row-1,col+2):
+                reachable_cell.append((row-1,col+2))
+        
+        if self.is_valid_cell(row-1,col-2):
+            if self.cell_is_valid_and_empty(row-1,col-2) or self.piece_can_hit_on_cell(row-1,col-2):
+                reachable_cell.append((row-1,col-2))
+        
+        if self.is_valid_cell(row-2, col+1):
+            if self.cell_is_valid_and_empty(row-2, col+1) or self.piece_can_hit_on_cell((row-2, col+1)):
+                reachable_cell.append((row-2, col+1))            
+            
+        
+        if self.is_valid_cell(row-2, col-1):
+            if self.cell_is_valid_and_empty(row-2, col-1) or self.piece_can_hit_on_cell(row-2, col-1):
+                reachable_cell.append((row-2, col-1))
+
+        return reachable_cell
 
 
 class Bishop(Piece):  # Läufer
@@ -276,4 +314,24 @@ class King(Piece):  # König
 
         :return: A list of reachable cells this king could move into.
         """
-        # TODO: Implement a method that returns all cells this piece can enter in its next move
+
+        row, col = self.cell 
+
+        possible_reachable_cells = [
+            (row - 1, col), # Links
+            (row + 1, col), # Rechts
+            (row, col + 1), # Oben
+            (row, col - 1), # Unten
+            (row - 1, col - 1), # Links Unten
+            (row + 1, col - 1), # Rechts Unten
+            (row - 1, col + 1), # Links Oben
+            (row + 1, col + 1), # Rechts Oben
+        ]
+
+        reachable_cells = [ cell for cell in possible_reachable_cells if self.can_enter_cell(cell) ]
+
+        print("Test")
+        for cell in reachable_cells:
+            print(cell)
+
+        return reachable_cells
