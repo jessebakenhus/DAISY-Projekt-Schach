@@ -276,4 +276,24 @@ class King(Piece):  # König
 
         :return: A list of reachable cells this king could move into.
         """
-        # TODO: Implement a method that returns all cells this piece can enter in its next move
+
+        row, col = self.cell 
+
+        possible_reachable_cells = [
+            (row - 1, col), # Links
+            (row + 1, col), # Rechts
+            (row, col + 1), # Oben
+            (row, col - 1), # Unten
+            (row - 1, col - 1), # Links Unten
+            (row + 1, col - 1), # Rechts Unten
+            (row - 1, col + 1), # Links Oben
+            (row + 1, col + 1), # Rechts Oben
+        ]
+
+        reachable_cells = [ cell for cell in possible_reachable_cells if self.can_enter_cell(cell) ]
+
+        print("Test")
+        for cell in reachable_cells:
+            print(cell)
+
+        return reachable_cells
