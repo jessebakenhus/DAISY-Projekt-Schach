@@ -153,36 +153,37 @@ class Rook(Piece):  # Turm
         reachable_cell = []
         row, col = self.cell
        
+        n = 1
+
         #Vertikal nach oben
         while self.can_enter_cell(row+n,col):
-            n = 1
             reachable_cell.append(row+n, col)
-            
             n+= 1
         if self.can_hit_on_cell(row+n+1,col):
             reachable_cell.append(row+n+1,col)
+
         #vertikal nach unten
         
-        while self.can_enter_cell(row+n,col):
-            n = -1
+        n = -1
+        while self.can_enter_cell(row+n,col): 
             reachable_cell.append(row+n, col)
             n+= -1
         if self.can_hit_on_cell(row+n-1,col):
             reachable_cell.append(row+n-1,col)
-        #horizontal nach rechts
         
+        #horizontal nach rechts
+        n = 1
         while self.can_enter_cell(row,col+n):
-            n = 1
             reachable_cell.append(row+n, col+n)
             n+= 1
         if self.can_hit_on_cell(row,col+n+1):
             reachable_cell.append(row,col+n+1)
+
         # horizontal nach links
-        
+        n = -1
         while self.can_enter_cell(row,col+n):
-            n = -1
             reachable_cell.append(row+n, col+n)
-            n+= -1
+            n += -1
         if self.can_hit_on_cell(row,col+n-1):
             reachable_cell.append(row,col+n-1)
         
@@ -212,42 +213,18 @@ class Knight(Piece):  # Springer
         # TODO: Implement a method that returns all cells this piece can enter in its next move
         row, col = self.cell
         
-        reachable_cell = []
+        reachable_cell = [
+            (row+2, col +1),
+            (row+2, col -1),
+            (row+1, col+2),
+            (row+1, col-2),
+            (row-1,col+2),
+            (row-1,col-2),
+            (row-2, col+1)
+            (row-2, col-1)
+        ]
 
-        if self.is_valid_cell(row+2, col +1):
-            if self.cell_is_valid_and_empty(row+2, col +1) or self.piece_can_hit_on_cell(row+2, col +1):
-                reachable_cell.append((row+2, col +1))
-        
-        if self.is_valid_cell(row+2, col -1):
-            if self.cell_is_valid_and_empty(row+2, col -1) or self.piece_can_hit_on_cell(row+2, col -1):
-                reachable_cell.append((row+2, col -1))
-        
-        if self.is_valid_cell(row+1, col+2):
-            if self.cell_is_valid_and_empty(row+1, col+2) or self.piece_can_hit_on_cell(row+1, col+2):
-                reachable_cell.append((row+1, col+2))
-        
-        if self.is_valid_cell(row+1, col-2):
-            if self.cell_is_valid_and_empty(row+1, col-2) or self.piece_can_hit_on_cell(row+1, col-2):
-                reachable_cell.append((row+1, col-2))
-        
-        if self.is_valid_cell(row-1,col+2):
-            if self.cell_is_valid_and_empty(row-1,col+2) or self.piece_can_hit_on_cell(row-1,col+2):
-                reachable_cell.append((row-1,col+2))
-        
-        if self.is_valid_cell(row-1,col-2):
-            if self.cell_is_valid_and_empty(row-1,col-2) or self.piece_can_hit_on_cell(row-1,col-2):
-                reachable_cell.append((row-1,col-2))
-        
-        if self.is_valid_cell(row-2, col+1):
-            if self.cell_is_valid_and_empty(row-2, col+1) or self.piece_can_hit_on_cell((row-2, col+1)):
-                reachable_cell.append((row-2, col+1))            
-            
-        
-        if self.is_valid_cell(row-2, col-1):
-            if self.cell_is_valid_and_empty(row-2, col-1) or self.piece_can_hit_on_cell(row-2, col-1):
-                reachable_cell.append((row-2, col-1))
-
-        return reachable_cell
+        return [ cell for cell in reachable_cell if self.cell_is_valid_and_empty(cell) or self.piece_can_hit_on_cell(cell) ]
 
 
 class Bishop(Piece):  # Läufer
