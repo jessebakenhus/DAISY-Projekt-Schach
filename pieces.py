@@ -159,8 +159,8 @@ class Rook(Piece):  # Turm
         while self.can_enter_cell(row+n,col):
             reachable_cell.append(row+n, col)
             n+= 1
-        if self.can_hit_on_cell(row+n+1,col):
-            reachable_cell.append(row+n+1,col)
+        if self.can_hit_on_cell(row+n,col):
+            reachable_cell.append(row+n,col)
 
         #vertikal nach unten
         
@@ -168,24 +168,24 @@ class Rook(Piece):  # Turm
         while self.can_enter_cell(row+n,col): 
             reachable_cell.append(row+n, col)
             n+= -1
-        if self.can_hit_on_cell(row+n-1,col):
-            reachable_cell.append(row+n-1,col)
+        if self.can_hit_on_cell(row+n,col):
+            reachable_cell.append(row+n,col)
         
         #horizontal nach rechts
         n = 1
         while self.can_enter_cell(row,col+n):
             reachable_cell.append(row+n, col+n)
             n+= 1
-        if self.can_hit_on_cell(row,col+n+1):
-            reachable_cell.append(row,col+n+1)
+        if self.can_hit_on_cell(row,col+n):
+            reachable_cell.append(row,col+n)
 
         # horizontal nach links
         n = -1
         while self.can_enter_cell(row,col+n):
             reachable_cell.append(row+n, col+n)
             n += -1
-        if self.can_hit_on_cell(row,col+n-1):
-            reachable_cell.append(row,col+n-1)
+        if self.can_hit_on_cell(row,col+n):
+            reachable_cell.append(row,col+n)
         
         return reachable_cell
 
@@ -246,7 +246,23 @@ class Bishop(Piece):  # Läufer
 
         :return: A list of reachable cells this bishop could move into.
         """
-        # TODO: Implement a method that returns all cells this piece can enter in its next move
+        row, col = self.cell
+
+        reachable_cells = []
+
+        #diagonal rechts oben
+        for i in range (1,8):
+            #diagonal rechts oben
+            reachable_cells.append((row+i, col+i))
+            #diagonal links oben
+            reachable_cells.append((row+i,col-i))
+            #diagonal rechts unten
+            reachable_cells.append((row-i,col+i))
+            #diagonal links unten
+            reachable_cells.append((row-i,col-i))
+
+        return [cell for cell in reachable_cells if self.cell_is_valid_and_empty(cell) or self.can_hit_on_cell(cell) ]
+        
 
 
 class Queen(Piece):  # Königin
