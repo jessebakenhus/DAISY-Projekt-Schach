@@ -154,38 +154,41 @@ class Rook(Piece):  # Turm
         row, col = self.cell
        
         n = 1
+        
+        #in der Schleife wird n immer neu definiert, damit der letzte Schritt
+        #um eine Figur zu schlagen erkannt und ausgeführt werden kann
 
         #Vertikal nach oben
-        while self.can_enter_cell(row+n,col):
-            reachable_cell.append(row+n, col)
+        while self.can_enter_cell((row+n,col)):
+            reachable_cell.append((row+n, col))
             n+= 1
-        if self.can_hit_on_cell(row+n,col):
-            reachable_cell.append(row+n,col)
+        if self.can_hit_on_cell((row+n,col)):
+            reachable_cell.append((row+n,col))
 
         #vertikal nach unten
         
         n = -1
-        while self.can_enter_cell(row+n,col): 
-            reachable_cell.append(row+n, col)
+        while self.can_enter_cell((row+n,col)): 
+            reachable_cell.append((row+n, col))
             n+= -1
-        if self.can_hit_on_cell(row+n,col):
-            reachable_cell.append(row+n,col)
+        if self.can_hit_on_cell((row+n,col)):
+            reachable_cell.append((row+n,col))
         
         #horizontal nach rechts
         n = 1
-        while self.can_enter_cell(row,col+n):
-            reachable_cell.append(row+n, col+n)
+        while self.can_enter_cell((row,col+n)):
+            reachable_cell.append((row, col+n))
             n+= 1
-        if self.can_hit_on_cell(row,col+n):
-            reachable_cell.append(row,col+n)
+        if self.can_hit_on_cell((row,col+n)):
+            reachable_cell.append((row,col+n))
 
         # horizontal nach links
         n = -1
-        while self.can_enter_cell(row,col+n):
-            reachable_cell.append(row+n, col+n)
+        while self.can_enter_cell((row,col+n)):
+            reachable_cell.append((row+n, col+n))
             n += -1
-        if self.can_hit_on_cell(row,col+n):
-            reachable_cell.append(row,col+n)
+        if self.can_hit_on_cell((row,col+n)):
+            reachable_cell.append((row,col+n))
         
         return reachable_cell
 
@@ -214,16 +217,24 @@ class Knight(Piece):  # Springer
         row, col = self.cell
         
         reachable_cell = [
+            # 2 Reihen nach oben und rechts
             (row+2, col +1),
+            # 2 Reihen anch oben und links
             (row+2, col -1),
+            # eine Reihe nach oben und 2 rechts
             (row+1, col+2),
+            # eine Reihe nach oben und 2 links
             (row+1, col-2),
+            # eine Reihe nach unten und 2 rechts
             (row-1,col+2),
+            # eine Reihe nach unten und 2 links
             (row-1,col-2),
+            # 2 Reihen nach unten und rechts
             (row-2, col+1)
+            # 2 Reihen nach unten und links
             (row-2, col-1)
         ]
-
+        # gefilterte Liste reachable_cells wird zurückgegeben -> Figur kann auch schlagen 
         return [ cell for cell in reachable_cell if self.cell_is_valid_and_empty(cell) or self.piece_can_hit_on_cell(cell) ]
 
 
