@@ -134,20 +134,40 @@ class Pawn(Piece):  # Bauer
         reachable_cell = []
 
         row, col = self.cell
-        # Bewegungsregel-> wenn in Reihe 7 (Index 6) dann 2 Felder
-        if self.can_enter_cell((row+1,col)):
-            reachable_cell.append((row+1,col))
-            if row == 6:
-                if self.can_enter_cell(row+2, col):
-                    reachable_cell.append(row+2, col)
-                    
-        # Diagonales Schlagen
-        if self.can_hit_on_cell((row+1,col-1)):
-            reachable_cell.append(row+1,col-1)       
-        
-        if self.can_hit_on_cell((row+1, col+1)):
-            reachable_cell.append(row+1, col+1)
-            
+
+        if self.is_white():
+
+            if self.board.cell_is_valid_and_empty((row + 1, col)):
+                reachable_cell.append((row + 1, col))
+
+                if row == 1:
+                    if self.board.cell_is_valid_and_empty((row + 2, col)):
+                        reachable_cell.append((row + 2, col))
+
+            # Diagonal schlagen
+            if self.can_hit_on_cell((row + 1, col - 1)):
+                reachable_cell.append((row + 1, col - 1))
+
+            if self.can_hit_on_cell((row + 1, col + 1)):
+                reachable_cell.append((row + 1, col + 1))
+
+        else:
+
+            if self.board.cell_is_valid_and_empty((row - 1, col)):
+                reachable_cell.append((row - 1, col))
+
+                # erster Schritt darf 2 nach vorne
+                if row == 6:
+                    if self.board.cell_is_valid_and_empty((row - 2, col)):
+                        reachable_cell.append((row - 2, col))
+
+            # Diagonal schlagen
+            if self.can_hit_on_cell((row - 1, col - 1)):
+                reachable_cell.append((row - 1, col - 1))
+
+            if self.can_hit_on_cell((row - 1, col + 1)):
+                reachable_cell.append((row - 1, col + 1))
+
         return reachable_cell
 
 
@@ -171,47 +191,33 @@ class Rook(Piece):  # Turm
 
         :return: A list of reachable cells this rook could move into.
         """
-        reachable_cell = []
+        reachable_cells = []
         row, col = self.cell
-       
-        n = 1
-        
-        #in der Schleife wird n immer neu definiert, damit der letzte Schritt
-        #um eine Figur zu schlagen erkannt und ausgeführt werden kann
 
-        #Vertikal nach oben
-        while self.can_enter_cell((row+n,col)):
-            reachable_cell.append((row+n, col))
-            n+= 1
-        if self.can_hit_on_cell((row+n,col)):
-            reachable_cell.append((row+n,col))
+        richtungen = [
+            (-1, 0),  # vertikal nach oben
+            (1, 0),  # vertikal nach unten
+            (0, 1),  # horizontal nach rechts
+            (0, -1)  # horizontal nach links
+        ]
 
-        #vertikal nach unten
-        
-        n = -1
-        while self.can_enter_cell((row+n,col)): 
-            reachable_cell.append((row+n, col))
-            n+= -1
-        if self.can_hit_on_cell((row+n,col)):
-            reachable_cell.append((row+n,col))
-        
-        #horizontal nach rechts
-        n = 1
-        while self.can_enter_cell((row,col+n)):
-            reachable_cell.append((row, col+n))
-            n+= 1
-        if self.can_hit_on_cell((row,col+n)):
-            reachable_cell.append((row,col+n))
+        # Durchlauf für jede Richtung und Diagonale
+        for delta_row, delta_col in richtungen:
 
-        # horizontal nach links
-        n = -1
-        while self.can_enter_cell((row,col+n)):
-            reachable_cell.append((row+n, col+n))
-            n += -1
-        if self.can_hit_on_cell((row,col+n)):
-            reachable_cell.append((row,col+n))
-        
-        return reachable_cell
+            # für die jeweilige Richtung und Diagonale das Spielfeld durch
+            for i in range(1, 8):
+                cell = (row + delta_row * i, col + delta_col * i)
+                piece = self.board.get_cell(cell)
+
+                if piece is None:
+                    if self.can_enter_cell(cell):
+                        reachable_cells.append(cell)
+                else:
+                    if self.can_hit_on_cell(cell):
+                        reachable_cells.append(cell)
+                    break
+
+        return reachable_cells
 
 
 class Knight(Piece):  # Springer
@@ -234,7 +240,6 @@ class Knight(Piece):  # Springer
 
         :return: A list of reachable cells this knight could move into.
         """
-        # TODO: Implement a method that returns all cells this piece can enter in its next move
         row, col = self.cell
         
         reachable_cell = [
@@ -251,12 +256,12 @@ class Knight(Piece):  # Springer
             # eine Reihe nach unten und 2 links
             (row-1,col-2),
             # 2 Reihen nach unten und rechts
-            (row-2, col+1)
+            (row-2, col+1),
             # 2 Reihen nach unten und links
             (row-2, col-1)
         ]
         # gefilterte Liste reachable_cells wird zurückgegeben -> Figur kann auch schlagen 
-        return [ cell for cell in reachable_cell if self.cell_is_valid_and_empty(cell) or self.piece_can_hit_on_cell(cell) ]
+        return [ cell for cell in reachable_cell if self.can_enter_cell(cell) or self.can_hit_on_cell(cell) ]
 
 
 class Bishop(Piece):  # Läufer
@@ -278,22 +283,33 @@ class Bishop(Piece):  # Läufer
 
         :return: A list of reachable cells this bishop could move into.
         """
+        reachable_cells = []
         row, col = self.cell
 
-        reachable_cells = []
+        richtungen = [
+            (-1, 1),  # diagonal rechts oben
+            (-1, -1),  # diagonal links oben
+            (1, 1),  # diagonal rechts unten
+            (1, -1),  # diagonal links unten
+        ]
 
-        #diagonal rechts oben
-        for i in range (1,8):
-            #diagonal rechts oben
-            reachable_cells.append((row+i, col+i))
-            #diagonal links oben
-            reachable_cells.append((row+i,col-i))
-            #diagonal rechts unten
-            reachable_cells.append((row-i,col+i))
-            #diagonal links unten
-            reachable_cells.append((row-i,col-i))
+        # Durchlauf für jede Richtung und Diagonale
+        for delta_row, delta_col in richtungen:
 
-        return [cell for cell in reachable_cells if self.cell_is_valid_and_empty(cell) or self.can_hit_on_cell(cell) ]
+            # für die jeweilige Richtung und Diagonale das Spielfeld durch
+            for i in range(1, 8):
+                cell = (row + delta_row * i, col + delta_col * i)
+                piece = self.board.get_cell(cell)
+
+                if piece is None:
+                    if self.can_enter_cell(cell):
+                        reachable_cells.append(cell)
+                else:
+                    if self.can_hit_on_cell(cell):
+                        reachable_cells.append(cell)
+                    break
+
+        return reachable_cells
         
 
 
@@ -317,8 +333,38 @@ class Queen(Piece):  # Königin
 
         :return: A list of reachable cells this queen could move into.
         """
-        # TODO: Implement a method that returns all cells this piece can enter in its next move
 
+        reachable_cells = []
+        row, col = self.cell
+
+        richtungen = [
+            (-1, 1),  # diagonal rechts oben
+            (-1, -1),  # diagonal links oben
+            (1, 1),  # diagonal rechts unten
+            (1, -1),  # diagonal links unten
+            (-1, 0),  # vertikal nach oben
+            (1, 0),  # vertikal nach unten
+            (0, 1),  # horizontal nach rechts
+            (0, -1)  # horizontal nach links
+        ]
+
+        # Durchlauf für jede Richtung und Diagonale
+        for delta_row, delta_col in richtungen:
+
+            # für die jeweilige Richtung und Diagonale das Spielfeld durch
+            for i in range(1, 8):
+                cell = (row + delta_row * i, col + delta_col * i)
+                piece = self.board.get_cell(cell)
+
+                if piece is None:
+                    if self.can_enter_cell(cell):
+                        reachable_cells.append(cell)
+                else:
+                    if self.can_hit_on_cell(cell):
+                        reachable_cells.append(cell)
+                    break
+
+        return reachable_cells
 
 class King(Piece):  # König
     def __init__(self, board, white):
@@ -354,9 +400,5 @@ class King(Piece):  # König
         ]
 
         reachable_cells = [ cell for cell in possible_reachable_cells if self.can_enter_cell(cell) ]
-
-        print("Test")
-        for cell in reachable_cells:
-            print(cell)
 
         return reachable_cells
