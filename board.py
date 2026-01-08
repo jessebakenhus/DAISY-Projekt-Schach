@@ -240,10 +240,13 @@ class Board(BoardBase):
         :param white: True if WHITE pieces are to be iterated, False otherwise
         :type white: Boolean
         """
-        for row in Board:
-            for cell in row:
-                if cell is not None and cell.is_white == white:
-                    yield self.get_cell(cell = cell)
+        for row in range(8):
+            for col in range(8):
+
+                piece = self.get_cell((row, col))
+
+                if piece is not None and piece.white == white:
+                    yield piece
 
 
     def find_king(self, white):
@@ -258,7 +261,11 @@ class Board(BoardBase):
 
         :return: The :py:class:'King': object of the given color or None if there is no King on the board.
         """
-        # TODO: Implement
+        for piece in self.iterate_cells_with_pieces(white):
+            if isinstance(piece, King):
+                return piece
+
+        return None
 
     def is_king_check(self, white):
         """
