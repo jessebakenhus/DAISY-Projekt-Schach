@@ -90,16 +90,16 @@ class Piece:
         
         for dir in possible_moves:
             old_pos = self.cell # speichern der ursprünglichen position
-            if not self.get_cell((dir)) == None:
-                possible_piece = self.get_cell((dir)) #get_cell gibt nicht position, sondern das piece auf der posi wieder
-            self.set_cell((dir),self)  # simulieren der züge (temporär)
+            if not self.board.get_cell((dir)) == None:
+                possible_piece = self.board.get_cell((dir)) #get_cell gibt nicht position, sondern das piece auf der posi wieder
+            self.board.set_cell((dir),self)  # simulieren der züge (temporär)
             
-            if not self.is_king_check_cached(self, self.is_white):  # schach prüfung
+            if not self.board.is_king_check_cached(self, self.is_white):  # schach prüfung
                 valid_cells.append((dir))
             
-            self.set_cell(self, (old_pos))   # zurückstellen der figuren
-            if not self.get_cell(dir) == None:
-                self.set_cell(possible_piece ,(dir))
+            self.board.set_cell(self, (old_pos))   # zurückstellen der figuren
+            if not self.board.get_cell(dir) == None:
+                self.board.set_cell(possible_piece ,(dir))
 
         return valid_cells
 
