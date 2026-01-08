@@ -240,7 +240,11 @@ class Board(BoardBase):
         :param white: True if WHITE pieces are to be iterated, False otherwise
         :type white: Boolean
         """
-        # TODO: Implement
+        for row in Board:
+            for cell in row:
+                if cell is not None and cell.is_white == white:
+                    yield self.get_cell(cell = cell)
+
 
     def find_king(self, white):
         """
