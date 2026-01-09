@@ -60,7 +60,60 @@ class Piece:
         
         :return: Return numerical score between -infinity and +infinity. Greater values indicate better evaluation result (more favorable).
         """
-        # TODO: Implement
+        # Wert der einzelnen Figuren
+        points = 0
+        pawn = 1
+        bishop, knight = 3
+        rook = 5
+        queen = 8
+        king = 1000000
+        
+        # mehr mögliche züge = mehr kontrolle übers spielfeld = more favorable
+        
+        anzahl_zuge = int(len(self.get_valid_cells))
+        
+        # je mehr figuren die figur angreift, desto besser --> Bsp. Gabel Pferd
+        
+        anzahl_schlagb_pieces = int(len(self.can_hit_on_cell))
+
+        # !!NICHT FERTIG !! 
+        # prüfen, wie viele von den eigenen figuren auf die position der self Figur haben
+        # also wie viele Figuren die Figur "decken", also zurückschlagen könnten falls
+        # die figur vom gegner geschlagen wird
+
+        
+        posi = self.cell
+        
+        self.board.set_cell(posi,)
+
+        Piece_Black = Pawn(self, not self.is_white)             # dieser Teil
+                                                    # funktioniert nicht, siehe oben
+        self.board.set_cell(posi, Piece_Black)
+
+        
+
+        for piece in self.board.iterate_cells_with_pieces(self.is_white):
+            if posi in piece.is_valid_cell():
+                points += 2  
+                         
+
+        
+        # Wie viele figuren des gegner können self Figur schlagen? --> Punkte abzug
+        # durch gegnerische Figuren iterieren
+
+        for piece in self.board.iterate_cells_with_pieces(not self.is_white):   # durch gegnerische Figuren iterieren
+            if posi in piece.is_valid_cell():
+                points -= 2  # wenn gegnerische figuren die eigene schlagen könnten --> für jede figur 2 punkte abzug
+
+        # anhand der kriterien die stellung bewerten
+        # verhältnis finden zwischen kriterien (z.b. zählt die anzahl an figuren die 
+        # geschlagen werden können mehr als nur die möglichen felder
+        # wo die figur hinziehen kann )
+        # beispiel:
+
+        #points += (num_capturable_pieces * 2) + num_valid_moves
+        
+
 
     def get_valid_cells(self):
         """
