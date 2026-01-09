@@ -96,7 +96,7 @@ class Piece:
 
             self.board.set_cell(move, self) # simulieren der züge (temporär)
 
-            if not self.board.is_king_check(self.is_white):  # schach prüfung
+            if not self.board.is_king_check(self.is_white()):  # schach prüfung
                 valid_cells.append(self.cell)
 
             self.board.set_cell(origin_cell, self)   # zurückstellen der figuren
