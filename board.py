@@ -279,11 +279,11 @@ class Board(BoardBase):
         """
         king = self.find_king(white)
 
-        for piece in self.iterate_cells_with_pieces(not white):
-
-            for row, col in piece.get_reachable_cells():
-                if row == king.cell[0] and col == king.cell[1]:
-                    return True
+        if king is not None:
+            for piece in self.iterate_cells_with_pieces(not white):
+                for row, col in piece.get_reachable_cells():
+                    if row == king.cell[0] and col == king.cell[1]:
+                        return True
 
         return False
 

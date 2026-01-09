@@ -84,22 +84,23 @@ class Piece:
         
         :return: Return True 
         """
+
         possible_moves = self.get_reachable_cells()
-        
+
         valid_cells = []
-        
-        for dir in possible_moves:
-            old_pos = self.cell # speichern der ursprünglichen position
-            if not self.board.get_cell((dir)) == None:
-                possible_piece = self.board.get_cell((dir)) #get_cell gibt nicht position, sondern das piece auf der posi wieder
-            self.board.set_cell((dir),self)  # simulieren der züge (temporär)
-            
-            if not self.board.is_king_check_cached(self, self.is_white):  # schach prüfung
-                valid_cells.append((dir))
-            
-            self.board.set_cell(self, (old_pos))   # zurückstellen der figuren
-            if not self.board.get_cell(dir) == None:
-                self.board.set_cell(possible_piece ,(dir))
+
+        for move in possible_moves:
+
+            origin_cell = self.cell # Speichern der ursprünglichen position
+            possible_piece = self.board.get_cell(move) #get_cell gibt nicht position, sondern das piece auf der posi wieder
+
+            self.board.set_cell(move, self) # simulieren der züge (temporär)
+
+            if not self.board.is_king_check(self.is_white):  # schach prüfung
+                valid_cells.append(self.cell)
+
+            self.board.set_cell(origin_cell, self)   # zurückstellen der figuren
+            self.board.set_cell(move, possible_piece)
 
         return valid_cells
 
