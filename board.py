@@ -277,7 +277,15 @@ class Board(BoardBase):
         For each opposing piece, call the "get_reachable_cells()" method to get a list of all reachable cells.
         Iterate over each reachable cell and check if the kings cell is reachable. If yes, shortcut and return True right away.
         """
-        # TODO: Implement
+        king = self.find_king(white)
+
+        for piece in self.iterate_cells_with_pieces(not white):
+
+            for row, col in piece.get_reachable_cells():
+                if row == king.cell[0] and col == king.cell[1]:
+                    return True
+
+        return False
 
     def evaluate(self):
         """
