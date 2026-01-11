@@ -76,36 +76,37 @@ class Piece:
         anzahl_zuege = int(len(self.get_valid_cells()))
         
         # je mehr figuren die figur angreift, desto besser --> Bsp. Gabel Pferd
-        
-        posi = self.cell
 
-       
-    
-        
+
         bedrohungen = 0 
         schlagb_figuren = 0
         
 
-        for cell in self.board.iterate_cells_with_pieces(not self.is_white()):  
-            
-            # Anzahl an Figuren die uns schlagen können
-            
+        for foreign_piece in self.board.iterate_cells_with_pieces(not self.is_white()):
+
+            foreign_cell = foreign_piece.cell
+
             #Figur vom Gegner wird abgefragt
-            piece = self.board.get_cell(cell)
+            piece = self.board.get_cell(foreign_cell)
             # Anzahl an Figuren die uns schlagen können
-            if posi in piece.get_valid_cells():
-                bedrohungen += 1
+
+            for cell in piece.get_valid_cells():
+                if np.array_equal(self.cell, cell):
+                    bedrohungen += 1
+
             # Anzahl an Figuren die wir schlagen können
-            if cell in self.get_valid_cells():
-                schlagb_figuren += 1
+            for cell in piece.get_valid_cells():
+                if np.array_equal(foreign_cell, cell):
+                    schlagb_figuren += 1
 
 
-    # Wenn Anzahl an Bedrohungen kleiner gleich Anzahl an gedeckten Figuren (nicht implementiert), dann ist Position mehr Wert
+        # Wenn Anzahl an Bedrohungen kleiner gleich Anzahl an gedeckten Figuren (nicht implementiert), dann ist Position mehr Wert
 
         
 
         if piece_value > 3:
             bedrohungen *= 2
+
         return (piece_value * 3) + (schlagb_figuren * 2) - (bedrohungen * 2) + (anzahl_zuege * 1/2)
             
 
@@ -457,9 +458,11 @@ class Queen(Piece):  # Königin
 class King(Piece):  # König
     def __init__(self, board, white):
         super().__init__(board, white)
+
     # teilt figur wert zu
     def get_value(self):
-        return sys.maxsize
+        # sys.maxsize war zu viel Subtraktion im Board funktioniert nicht mehr
+        return 1e6
 
     def get_reachable_cells(self):
         """

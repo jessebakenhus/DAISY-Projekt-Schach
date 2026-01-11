@@ -297,8 +297,19 @@ class Board(BoardBase):
         Use the iterate_cells_with_pieces Method to find all WHITE pieces and call their respective "evaluate" Method. Sum those scores up.
         Then use the iterate_cells_with_pieces Method to find all BLACK pieces, call their respective "evaluate" Method and substract that from the score.
         """
-        # TODO: Implement
-        score = 0.0
+
+        score_white = 0
+        for piece in self.iterate_cells_with_pieces(True):
+            score_white += piece.evaluate()
+            print(score_white)
+
+        score_black = 0
+        for piece in self.iterate_cells_with_pieces(False):
+            score_black += piece.evaluate()
+            print(score_black)
+
+        score = score_white - score_black
+
         return score
 
     def is_valid_cell(self, cell):
@@ -311,7 +322,7 @@ class Board(BoardBase):
         being within the allowed range (0 to 7 inclusively).
         Don´t forget to handle the special case of "cell" being None. Return False in that case
         """
-        if cell == None:
+        if cell is None:
             return False
 
         row, col = cell #Teilt cell (Tupel) in zwei variablen auf -> Position 1 und 2 vom Tupel
