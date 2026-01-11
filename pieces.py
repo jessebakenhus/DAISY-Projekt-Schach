@@ -1,4 +1,5 @@
 import numpy as np
+import sys 
 
 class Piece:
     """
@@ -47,6 +48,10 @@ class Piece:
         :return: True if the piece can hit on the provided cell, False otherwise
         """
         return self.board.piece_can_hit_on_cell(self, cell)
+    
+    # damit funktion in dieser Klasse aufrufbar ist
+    def get_value(self):
+        pass
 
     def evaluate(self):
         """
@@ -61,49 +66,61 @@ class Piece:
         :return: Return numerical score between -infinity and +infinity. Greater values indicate better evaluation result (more favorable).
         """
         # Wert der einzelnen Figuren
-        points = 0
-        pawn = 1
-        bishop, knight = 3
-        rook = 5
-        queen = 8
-        king = 1000000
+        piece_value = self.get_value()
         
+        # Wert des Königs (unendlich) wird direkt zurückgegeben
+        if piece_value == sys.maxsize:
+            return sys.maxsize
         # mehr mögliche züge = mehr kontrolle übers spielfeld = more favorable
         
-        anzahl_zuge = int(len(self.get_valid_cells))
+        anzahl_zuege = int(len(self.get_valid_cells()))
         
         # je mehr figuren die figur angreift, desto besser --> Bsp. Gabel Pferd
         
-        anzahl_schlagb_pieces = int(len(self.can_hit_on_cell))
-
-        # !!NICHT FERTIG !! 
-        # prüfen, wie viele von den eigenen figuren auf die position der self Figur haben
-        # also wie viele Figuren die Figur "decken", also zurückschlagen könnten falls
-        # die figur vom gegner geschlagen wird
-
-        
         posi = self.cell
+
+       
+    
         
-        self.board.set_cell(posi,)
+        bedrohungen = 0 
+        schlagb_figuren = 0
+        
 
-        Piece_Black = Pawn(self, not self.is_white)             # dieser Teil
-                                                    # funktioniert nicht, siehe oben
-        self.board.set_cell(posi, Piece_Black)
+        for cell in self.board.iterate_cells_with_pieces(not self.is_white()):  
+            
+            # Anzahl an Figuren die uns schlagen können
+            
+            #Figur vom Gegner wird abgefragt
+            piece = self.board.get_cell(cell)
+            # Anzahl an Figuren die uns schlagen können
+            if posi in piece.get_valid_cells():
+                bedrohungen += 1
+            # Anzahl an Figuren die wir schlagen können
+            if cell in self.get_valid_cells():
+                schlagb_figuren += 1
+
+
+    # Wenn Anzahl an Bedrohungen kleiner gleich Anzahl an gedeckten Figuren (nicht implementiert), dann ist Position mehr Wert
 
         
 
-        for piece in self.board.iterate_cells_with_pieces(self.is_white):
-            if posi in piece.is_valid_cell():
-                points += 2  
+        if piece_value > 3:
+            bedrohungen *= 2
+        return (piece_value * 3) + (schlagb_figuren * 2) - (bedrohungen * 2) + (anzahl_zuege * 1/2)
+            
+
+
+            
+            
+           
                          
-
+    
         
-        # Wie viele figuren des gegner können self Figur schlagen? --> Punkte abzug
-        # durch gegnerische Figuren iterieren
+    
 
-        for piece in self.board.iterate_cells_with_pieces(not self.is_white):   # durch gegnerische Figuren iterieren
-            if posi in piece.is_valid_cell():
-                points -= 2  # wenn gegnerische figuren die eigene schlagen könnten --> für jede figur 2 punkte abzug
+
+
+    # wenn gegnerische figuren die eigene schlagen könnten --> für jede figur 2 punkte abzug
 
         # anhand der kriterien die stellung bewerten
         # verhältnis finden zwischen kriterien (z.b. zählt die anzahl an figuren die 
@@ -164,6 +181,9 @@ class Piece:
 class Pawn(Piece):  # Bauer
     def __init__(self, board, white):
         super().__init__(board, white)
+    # teilt figur wert zu
+    def get_value(self):
+        return 1
 
     def get_reachable_cells(self):
         """
@@ -185,49 +205,54 @@ class Pawn(Piece):  # Bauer
         
         :return: A list of reachable cells this pawn could move into.
         """
-        reachable_cell = []
+        reachable_cells = []
 
         row, col = self.cell
 
         if self.is_white():
 
             if self.board.cell_is_valid_and_empty((row + 1, col)):
-                reachable_cell.append((row + 1, col))
+                reachable_cells.append((row + 1, col))
 
                 if row == 1:
                     if self.board.cell_is_valid_and_empty((row + 2, col)):
-                        reachable_cell.append((row + 2, col))
+                        reachable_cells.append((row + 2, col))
 
             # Diagonal schlagen
             if self.can_hit_on_cell((row + 1, col - 1)):
-                reachable_cell.append((row + 1, col - 1))
+                reachable_cells.append((row + 1, col - 1))
 
             if self.can_hit_on_cell((row + 1, col + 1)):
-                reachable_cell.append((row + 1, col + 1))
+                reachable_cells.append((row + 1, col + 1))
 
         else:
 
             if self.board.cell_is_valid_and_empty((row - 1, col)):
-                reachable_cell.append((row - 1, col))
+                reachable_cells.append((row - 1, col))
 
                 # erster Schritt darf 2 nach vorne
                 if row == 6:
                     if self.board.cell_is_valid_and_empty((row - 2, col)):
-                        reachable_cell.append((row - 2, col))
+                        reachable_cells.append((row - 2, col))
 
             # Diagonal schlagen
             if self.can_hit_on_cell((row - 1, col - 1)):
-                reachable_cell.append((row - 1, col - 1))
+                reachable_cells.append((row - 1, col - 1))
 
             if self.can_hit_on_cell((row - 1, col + 1)):
-                reachable_cell.append((row - 1, col + 1))
+                reachable_cells.append((row - 1, col + 1))
 
-        return reachable_cell
+        return reachable_cells
+    
+
 
 
 class Rook(Piece):  # Turm
     def __init__(self, board, white):
         super().__init__(board, white)
+    # teilt figur wert zu
+    def get_value(self):
+        return 5
 
     def get_reachable_cells(self):
         """
@@ -277,6 +302,9 @@ class Rook(Piece):  # Turm
 class Knight(Piece):  # Springer
     def __init__(self, board, white):
         super().__init__(board, white)
+    # teilt figur wert zu
+    def get_value(self):
+        return 3
 
     def get_reachable_cells(self):
         """
@@ -321,6 +349,9 @@ class Knight(Piece):  # Springer
 class Bishop(Piece):  # Läufer
     def __init__(self, board, white):
         super().__init__(board, white)
+    # teilt figur wert zu
+    def get_value(self):
+        return 3
 
     def get_reachable_cells(self):
         """
@@ -370,6 +401,9 @@ class Bishop(Piece):  # Läufer
 class Queen(Piece):  # Königin
     def __init__(self, board, white):
         super().__init__(board, white)
+    # teilt figur wert zu
+    def get_value(self):
+        return 9
 
     def get_reachable_cells(self):
         """
@@ -423,6 +457,9 @@ class Queen(Piece):  # Königin
 class King(Piece):  # König
     def __init__(self, board, white):
         super().__init__(board, white)
+    # teilt figur wert zu
+    def get_value(self):
+        return sys.maxsize
 
     def get_reachable_cells(self):
         """
