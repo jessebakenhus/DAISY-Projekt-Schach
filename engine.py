@@ -93,7 +93,14 @@ def evaluate_all_possible_moves(board, minMaxArg, maximumNumberOfMoves = 10):
     After sorting, a maximum number of moves as provided by the respective parameter must be returned. If there are 
     more moves possible (in most situations there are), only return the top (or worst). Hint: Slice the list after sorting. 
     """
-    # board.iterate_cells_with_pieces()
+
+    pieces = board.iterate_cells_with_pieces(minMaxArg.playAsWhite)
+
+    for piece in pieces:
+        valid_moves = piece.get_valid_cells()
+
+
+
 
 def minMax(board, minMaxArg):
     """
