@@ -111,11 +111,11 @@ def evaluate_all_possible_moves(board, minMaxArg, maximumNumberOfMoves = 10):
 
     
     if minMaxArg.playAsWhite:
-        evaluated_possible_moves.sort(key=lambda move: move.score)
-    else:
         evaluated_possible_moves.sort(key=lambda move: move.score, reverse=True)
+    else:
+        evaluated_possible_moves.sort(key=lambda move: move.score)
 
-    return evaluated_possible_moves
+    return evaluated_possible_moves[:maximumNumberOfMoves]
 
             
 
