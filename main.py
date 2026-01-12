@@ -17,7 +17,7 @@ def run_tests():
         sys.exit(1)
 
 def main():  
-    args = "manual"
+    args = "ai"
 
     if args == "manual":
         board = Board()

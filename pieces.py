@@ -67,10 +67,7 @@ class Piece:
         """
         # Wert der einzelnen Figuren
         piece_value = self.get_value()
-        
-        # Wert des Königs (unendlich) wird direkt zurückgegeben
-        if piece_value == sys.maxsize:
-            return sys.maxsize
+
         # mehr mögliche züge = mehr kontrolle übers spielfeld = more favorable
         
         anzahl_zuege = int(len(self.get_valid_cells()))
@@ -461,7 +458,7 @@ class King(Piece):  # König
 
     # teilt figur wert zu
     def get_value(self):
-        # sys.maxsize war zu viel Subtraktion im Board funktioniert nicht mehr
+        # sys.maxsize war zu viel: Subtraktion im Board funktioniert nicht mehr
         return 1e6
 
     def get_reachable_cells(self):

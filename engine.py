@@ -93,8 +93,7 @@ def evaluate_all_possible_moves(board, minMaxArg, maximumNumberOfMoves = 10):
     After sorting, a maximum number of moves as provided by the respective parameter must be returned. If there are 
     more moves possible (in most situations there are), only return the top (or worst). Hint: Slice the list after sorting. 
     """
-    # TODO: Implement the method according to the above description
-
+    # board.iterate_cells_with_pieces()
 
 def minMax(board, minMaxArg):
     """
@@ -178,7 +177,15 @@ def suggest_random_move(board):
 
     If there are no legal moves at all, return None.
     """
-    # TODO: Implement a valid random move
+
+    pieces = board.iterate_cells_with_pieces(True)
+
+    valid_pieces = [piece for piece in pieces if piece.get_valid_cells()]
+
+    piece = random.choice(valid_pieces)
+    cell = random.choice(piece.get_valid_cells())
+
+    return Move(piece, cell, piece.evaluate())
 
 
 
