@@ -301,12 +301,12 @@ class Board(BoardBase):
         score_white = 0
         for piece in self.iterate_cells_with_pieces(True):
             score_white += piece.evaluate()
-            print(score_white)
+            
 
         score_black = 0
         for piece in self.iterate_cells_with_pieces(False):
             score_black += piece.evaluate()
-            print(score_black)
+            
 
         score = score_white - score_black
 

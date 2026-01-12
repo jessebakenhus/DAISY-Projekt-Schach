@@ -1,6 +1,7 @@
 import numpy as np
 import sys 
 
+
 class Piece:
     """
     Base class for pieces on the board. 
@@ -99,13 +100,42 @@ class Piece:
 
         # Wenn Anzahl an Bedrohungen kleiner gleich Anzahl an gedeckten Figuren (nicht implementiert), dann ist Position mehr Wert
 
+        def berechne_anzahl_gedeckt():
+            anzahl = 0
+            
+            posi = self.cell
+            
+            self.board.set_cell(posi, None)
+            
+            pieces = self.board.iterate_cells_with_pieces(self.is_white())
+            
+            for piece in pieces:
+                for cell in piece.get_valid_cells():
+                    if np.array_equal(cell, posi):
+                        anzahl += 1
+            
+            self.board.set_cell(posi, self)
+
+            return anzahl
+            
+        score = 0
+
+        score += piece_value
+
+        sicherheit = bedrohungen - berechne_anzahl_gedeckt()
+        if sicherheit > 0:
+            score -= piece_value * sicherheit
+        else:
+            score += piece_value * abs(sicherheit) * 0,3
         
 
-        if piece_value > 3:
-            bedrohungen *= 2
+        score += schlagb_figuren
 
-        return (piece_value * 3) + (schlagb_figuren * 2) - (bedrohungen * 2) + (anzahl_zuege * 1/2)
-            
+        score += 0.1 * anzahl_zuege
+
+        return score
+        
+        
 
 
             
