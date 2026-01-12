@@ -93,11 +93,32 @@ def evaluate_all_possible_moves(board, minMaxArg, maximumNumberOfMoves = 10):
     After sorting, a maximum number of moves as provided by the respective parameter must be returned. If there are 
     more moves possible (in most situations there are), only return the top (or worst). Hint: Slice the list after sorting. 
     """
+    evaluated_possible_moves = []
+    pieces = board.iterate_cells_with_pieces(minMaxArg.playAsWhite) # alle figuren der farbe
 
-    pieces = board.iterate_cells_with_pieces(minMaxArg.playAsWhite)
+    for piece in pieces: 
+        posi = piece.cell # ursprüngliche position jeder figur speichern
+        valid_moves = piece.get_valid_cells() # alle möglichen züge der jeweiligen figur durchgehen
+        for move in valid_moves: 
 
-    for piece in pieces:
-        valid_moves = piece.get_valid_cells()
+            gegner_figur = board.get_cell(move) # mögliche figur oder leer (None)
+
+            board.set_cell(move, piece) # simulation des zuges
+            evaluated_possible_moves.append(Move(piece, move, board.evaluate())) # Bewertung
+
+            board.set_cell(posi, piece)  # zurücksetzen beider figuren
+            board.set_cell(move, gegner_figur)
+
+    
+    if minMaxArg.playAsWhite:
+        evaluated_possible_moves.sort(key=lambda move: move.score)
+    else:
+        evaluated_possible_moves.sort(key=lambda move: move.score, reverse=True)
+
+    return evaluated_possible_moves
+
+            
+
 
 
 
