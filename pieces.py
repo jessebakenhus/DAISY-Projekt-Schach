@@ -126,7 +126,7 @@ class Piece:
         if sicherheit > 0:
             score -= piece_value * sicherheit
         else:
-            score += piece_value * abs(sicherheit) * 0,3
+            score += piece_value * abs(sicherheit) * 0.3
         
 
         score += schlagb_figuren
