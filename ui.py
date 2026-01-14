@@ -179,8 +179,8 @@ def run_game(board, manual=False):
 
     while running:
         if nextMove is None and not manual:
-            # nextMove = suggest_move(board)
-            nextMove = suggest_random_move(board)
+            nextMove = suggest_move(board)
+            # nextMove = suggest_random_move(board)
             print("Next Move is ", nextMove)
             board.set_cell(nextMove.cell, nextMove.piece)
             uiState.score = nextMove.score

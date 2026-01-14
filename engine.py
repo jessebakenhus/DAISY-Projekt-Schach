@@ -191,6 +191,31 @@ def minMax(board, minMaxArg):
     """
     # TODO: Implement the Mini-Max algorithm
 
+    evaluated_moves = evaluate_all_possible_moves(board=board, minMaxArg=minMaxArg)
+
+    if not evaluated_moves:
+        return Move(None, None, None)
+
+    if minMaxArg.depth == 1:
+        return evaluated_moves[0]
+
+    for move in evaluated_moves:
+
+        posi = move.cell
+        piece_auf_move = board.get_cell(cell=move.cell)
+
+        board.set_cell(cell=move.cell, piece=move.piece)
+
+        minMaxArg.next()
+        minMax_ergebnis = minMax_cached(board=board, minMaxArg=minMaxArg)
+
+        print(minMax_ergebnis.score)
+
+        board.set_cell(cell=move.cell, piece=piece_auf_move)
+        board.set_cell(cell=posi, piece=move.piece)
+
+        return minMax_ergebnis
+
 
 def suggest_random_move(board):
     """

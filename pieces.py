@@ -75,10 +75,8 @@ class Piece:
         
         # je mehr figuren die figur angreift, desto besser --> Bsp. Gabel Pferd
 
-
         bedrohungen = 0 
         schlagb_figuren = 0
-        
 
         for foreign_piece in self.board.iterate_cells_with_pieces(not self.is_white()):
 
