@@ -3,7 +3,7 @@ from tqdm import tqdm
 from util import map_piece_to_character, cell_to_string
 
 
-DEPTH = 3
+DEPTH = 10
 
 
 class MinMaxArg:
@@ -195,30 +195,42 @@ def minMax(board, minMaxArg):
 
     if not evaluated_moves:
         score = 1e6
-        if MinMaxArg.playAsWhite:
+        if minMaxArg.playAsWhite:
             score *= -1
         return Move(None, None, score)
 
     if minMaxArg.depth == 1:
         return evaluated_moves[0]
+    
+    if minMaxArg.depth > 1:
+         
 
-    for move in evaluated_moves:
+        for move in evaluated_moves:
 
-        posi = move.cell
-        piece_auf_move = board.get_cell(cell=move.cell)
+            posi = move.cell[0]
+            piece_auf_move = board.get_cell(cell=move.cell[1])
 
-        board.set_cell(cell=move.cell, piece=move.piece)
+            board.set_cell(cell=move.cell, piece=move.piece)
 
-        minMaxArg.next()
-        minMax_ergebnis = minMax_cached(board=board, minMaxArg=minMaxArg)
+            
+            minMax_ergebnis = minMax_cached(board=board,minMaxArg = minMaxArg.next())
 
-        print(minMax_ergebnis.score)
+            minMax_ergebnis = minMax_ergebnis.score
 
-        board.set_cell(cell=move.cell, piece=piece_auf_move)
-        board.set_cell(cell=posi, piece=move.piece)
-
-        return minMax_ergebnis
-
+            board.set_cell(cell=move.cell, piece=piece_auf_move)
+            board.set_cell(cell=posi, piece=move.piece)
+            
+            if minMaxArg.playAsWhite:
+                evaluated_moves.sort(key=lambda move: move.score, reverse=True)
+            else:
+                evaluated_moves.sort(key=lambda move: move.score)
+            
+    
+    
+    return evaluated_moves[0]
+        
+        
+    
 
 def suggest_random_move(board):
     """
