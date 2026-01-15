@@ -194,7 +194,10 @@ def minMax(board, minMaxArg):
     evaluated_moves = evaluate_all_possible_moves(board=board, minMaxArg=minMaxArg)
 
     if not evaluated_moves:
-        return Move(None, None, None)
+        score = 1e6
+        if MinMaxArg.playAsWhite:
+            score *= -1
+        return Move(None, None, score)
 
     if minMaxArg.depth == 1:
         return evaluated_moves[0]
