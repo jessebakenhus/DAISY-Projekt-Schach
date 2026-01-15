@@ -109,11 +109,7 @@ def evaluate_all_possible_moves(board, minMaxArg, maximumNumberOfMoves = 10):
             board.set_cell(posi, piece)  # zurücksetzen beider figuren
             board.set_cell(move, gegner_figur)
 
-    
-    if minMaxArg.playAsWhite:
-        evaluated_possible_moves.sort(key=lambda move: move.score, reverse=True)
-    else:
-        evaluated_possible_moves.sort(key=lambda move: move.score)
+    evaluated_possible_moves.sort(key=lambda move: move.score, reverse=minMaxArg.playAsWhite)
 
     return evaluated_possible_moves[:maximumNumberOfMoves]
 
