@@ -89,12 +89,12 @@ class Piece:
             # Anzahl an Figuren die uns schlagen können
 
             for cell in piece.get_valid_cells():
-                if np.array_equal(self.cell, cell):
+                if cell[0] == self.cell[0] and cell[1] == self.cell[1]:
                     bedrohungen += 1
 
             # Anzahl an Figuren die wir schlagen können
             for cell in piece.get_valid_cells():
-                if np.array_equal(foreign_cell, cell):
+                if cell[0] == foreign_cell[0] and cell[1] == foreign_cell[1]:
                     schlagb_figuren += 1
 
 
@@ -111,7 +111,7 @@ class Piece:
             
             for piece in pieces:
                 for cell in piece.get_valid_cells():
-                    if np.array_equal(cell, posi):
+                    if cell[0] == posi[0] and cell[1] == posi[1]:
                         anzahl += 1
             
             self.board.set_cell(posi, self)
