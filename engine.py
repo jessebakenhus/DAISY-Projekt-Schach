@@ -197,23 +197,21 @@ def minMax(board, minMaxArg):
 
     if minMaxArg.depth == 1:
         return evaluated_moves[0]
-    
-    if minMaxArg.depth > 1:
 
-        for move in evaluated_moves:
+    for move in evaluated_moves:
 
-            # Ursprüngliche Zelle und Piece
-            cell = move.piece.cell
-            piece = move.piece
+        # Ursprüngliche Zelle und Piece
+        cell = move.piece.cell
+        piece = move.piece
 
-            board.set_cell(cell=cell, piece=piece)
+        board.set_cell(cell=cell, piece=piece)
 
-            minMax_ergebnis = minMax_cached(board=board, minMaxArg = minMaxArg.next())
+        minMax_ergebnis = minMax_cached(board=board, minMaxArg = minMaxArg.next())
 
-            move.score = minMax_ergebnis.score
+        move.score = minMax_ergebnis.score
 
-            board.set_cell(cell=move.cell, piece=piece)
-            board.set_cell(cell=cell, piece=move.piece)
+        board.set_cell(cell=move.cell, piece=piece)
+        board.set_cell(cell=cell, piece=move.piece)
 
     evaluated_moves.sort(key=lambda move: move.score, reverse=minMaxArg.playAsWhite)
 
