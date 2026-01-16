@@ -69,7 +69,7 @@ class Piece:
         # Wert der einzelnen Figuren
         piece_value = self.get_value()
 
-        return piece_value
+        
 
         # mehr mögliche züge = mehr kontrolle übers spielfeld = more favorable
         

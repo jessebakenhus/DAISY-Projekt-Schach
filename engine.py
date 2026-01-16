@@ -3,7 +3,7 @@ from tqdm import tqdm
 from util import map_piece_to_character, cell_to_string
 
 
-DEPTH = 10
+DEPTH = 3
 
 
 class MinMaxArg:
@@ -203,14 +203,14 @@ def minMax(board, minMaxArg):
         # Ursprüngliche Zelle und Piece
         cell = move.piece.cell
         piece = move.piece
-
+        urspr_piece = board.get_cell(move.cell)
         board.set_cell(cell=cell, piece=piece)
 
         minMax_ergebnis = minMax_cached(board=board, minMaxArg = minMaxArg.next())
 
         move.score = minMax_ergebnis.score
 
-        board.set_cell(cell=move.cell, piece=piece)
+        board.set_cell(cell=move.cell, piece=urspr_piece)
         board.set_cell(cell=cell, piece=move.piece)
 
     evaluated_moves.sort(key=lambda move: move.score, reverse=minMaxArg.playAsWhite)
