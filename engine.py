@@ -208,8 +208,10 @@ def minMax(board, minMaxArg):
 
         minMax_ergebnis = minMax_cached(board=board, minMaxArg = minMaxArg.next())
 
+        # Score überschreiben
         move.score = minMax_ergebnis.score
 
+        # Zurücksetzen
         board.set_cell(cell=move.cell, piece=urspr_piece)
         board.set_cell(cell=cell, piece=move.piece)
 
