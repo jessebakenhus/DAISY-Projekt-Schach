@@ -1,7 +1,3 @@
-import numpy as np
-import sys 
-
-
 class Piece:
     """
     Base class for pieces on the board. 
@@ -66,98 +62,68 @@ class Piece:
         
         :return: Return numerical score between -infinity and +infinity. Greater values indicate better evaluation result (more favorable).
         """
-        # Wert der einzelnen Figuren
         piece_value = self.get_value()
 
+        """
+        Wichtig: Damit die Test durchlaufen, muss return piece_value aufgerufen werden. 
+        Da sonst die Tests nicht durchlaufen, wegen unserer Custom Logik von Evaluate. 
+        In den gegebenen Tests haben die Pieces eine viel höhere Wertigkeit.
         
+        Das haben wir auskommentiert.
+        """
+        # return piece_value
 
-        # mehr mögliche züge = mehr kontrolle übers spielfeld = more favorable
-        
-        anzahl_zuege = int(len(self.get_valid_cells()))
-        
-        # je mehr figuren die figur angreift, desto besser --> Bsp. Gabel Pferd
 
-        bedrohungen = 0 
+        own_valid_cells = self.get_valid_cells()
+
+        anzahl_zuege = len(own_valid_cells)
+
+        posi = self.cell
+
+        bedrohungen = 0
         schlagb_figuren = 0
 
         for foreign_piece in self.board.iterate_cells_with_pieces(not self.is_white()):
 
             foreign_cell = foreign_piece.cell
+            foreign_valid_cells = foreign_piece.get_valid_cells()
 
-            #Figur vom Gegner wird abgefragt
-            piece = self.board.get_cell(foreign_cell)
-            # Anzahl an Figuren die uns schlagen können
-
-            for cell in piece.get_valid_cells():
-                if cell[0] == self.cell[0] and cell[1] == self.cell[1]:
+            for cell in foreign_valid_cells:
+                if cell[0] == posi[0] and cell[1] == posi[1]:
                     bedrohungen += 1
+                    break
 
-            # Anzahl an Figuren die wir schlagen können
-            for cell in piece.get_valid_cells():
+            for cell in own_valid_cells:
                 if cell[0] == foreign_cell[0] and cell[1] == foreign_cell[1]:
                     schlagb_figuren += 1
-
-
-        # Wenn Anzahl an Bedrohungen kleiner gleich Anzahl an gedeckten Figuren (nicht implementiert), dann ist Position mehr Wert
+                    break
 
         def berechne_anzahl_gedeckt():
             anzahl = 0
-            
-            posi = self.cell
-            
+
             self.board.set_cell(posi, None)
-            
-            pieces = self.board.iterate_cells_with_pieces(self.is_white())
-            
-            for piece in pieces:
+
+            for piece in self.board.iterate_cells_with_pieces(self.is_white()):
                 for cell in piece.get_valid_cells():
                     if cell[0] == posi[0] and cell[1] == posi[1]:
                         anzahl += 1
-            
+                        break  # Jede Figur kann uns nur einmal decken
+
             self.board.set_cell(posi, self)
-
             return anzahl
-            
-        score = 0
 
-        score += piece_value
+        # Berechnung
+        score = piece_value
 
         sicherheit = bedrohungen - berechne_anzahl_gedeckt()
         if sicherheit > 0:
             score -= piece_value * sicherheit
         else:
             score += piece_value * abs(sicherheit) * 0.3
-        
 
-        score += schlagb_figuren
-
-        score += 0.1 * anzahl_zuege
+        score += schlagb_figuren + 0.1 * anzahl_zuege
 
         return score
-        
-        
-
-
-            
-            
-           
-                         
-    
-        
-    
-
-
-
-    # wenn gegnerische figuren die eigene schlagen könnten --> für jede figur 2 punkte abzug
-
-        # anhand der kriterien die stellung bewerten
-        # verhältnis finden zwischen kriterien (z.b. zählt die anzahl an figuren die 
-        # geschlagen werden können mehr als nur die möglichen felder
-        # wo die figur hinziehen kann )
-        # beispiel:
-
-        #points += (num_capturable_pieces * 2) + num_valid_moves
-        
 
 
     def get_valid_cells(self):
@@ -271,7 +237,6 @@ class Pawn(Piece):  # Bauer
                 reachable_cells.append((row - 1, col + 1))
 
         return reachable_cells
-    
 
 
 
