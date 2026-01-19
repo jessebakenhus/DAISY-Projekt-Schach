@@ -105,13 +105,11 @@ class Piece:
 
                         for cell in own_valid_cells:
                             if cell[0] == foreign_cell[0] and cell[1] == foreign_cell[1]:
-                                if self.get_value() < piece.get_value() and piece.get_value() != 1e6:
+                                if self.get_value() < piece.get_value():
                                     schlagb_figuren_score = 1e3
 
         # Berechnung
-
         sicherheit = anzahl_gedeckt - bedrohungen
-
         anzahl_zuege = len(own_valid_cells)
 
         return (
