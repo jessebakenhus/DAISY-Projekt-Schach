@@ -80,43 +80,43 @@ class Piece:
 
         bedrohungen = 0
         schlagb_figuren_score = 0
+        anzahl_gedeckt = 0
 
-        for foreign_piece in self.board.iterate_cells_with_pieces(not self.is_white()):
+        for row in range(8):
+            for col in range(8):
 
-            foreign_cell = foreign_piece.cell
-            foreign_valid_cells = foreign_piece.get_valid_cells()
+                piece = self.board.get_cell((row, col))
 
-            for cell in foreign_valid_cells:
-                if cell[0] == posi[0] and cell[1] == posi[1]:
-                    bedrohungen += 1
+                if piece is not None:
 
-            for cell in own_valid_cells:
-                if cell[0] == foreign_cell[0] and cell[1] == foreign_cell[1]:
-                    if self.get_value() < foreign_piece.get_value():
-                        schlagb_figuren_score += foreign_piece.get_value()
+                    if piece.is_white() == self.white:
 
+                        for cell in piece.get_valid_cells():
+                            if cell[0] == posi[0] and cell[1] == posi[1]:
+                                anzahl_gedeckt += 1
 
-        def berechne_anzahl_gedeckt():
-            anzahl = 0
+                    else:
 
-            self.board.set_cell(posi, None)
+                        foreign_cell = piece.cell
+                        foreign_valid_cells = piece.get_valid_cells()
 
-            for piece in self.board.iterate_cells_with_pieces(self.is_white()):
-                for cell in piece.get_valid_cells():
-                    if cell[0] == posi[0] and cell[1] == posi[1]:
-                        anzahl += 1
+                        for cell in foreign_valid_cells:
+                            if cell[0] == posi[0] and cell[1] == posi[1]:
+                                bedrohungen += 1
 
-            self.board.set_cell(posi, self)
-            return anzahl
+                        for cell in own_valid_cells:
+                            if cell[0] == foreign_cell[0] and cell[1] == foreign_cell[1]:
+                                if self.get_value() < piece.get_value():
+                                    schlagb_figuren_score = 1e3
 
         # Berechnung
 
-        sicherheit = berechne_anzahl_gedeckt() - bedrohungen
+        sicherheit = anzahl_gedeckt - bedrohungen
 
         anzahl_zuege = len(own_valid_cells)
 
         return (
-            piece_value + sicherheit + anzahl_zuege + schlagb_figuren_score
+           (piece_value * sicherheit) + anzahl_zuege + schlagb_figuren_score
         )
 
 
