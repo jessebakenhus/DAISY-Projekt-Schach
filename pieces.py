@@ -76,12 +76,10 @@ class Piece:
 
         own_valid_cells = self.get_valid_cells()
 
-        anzahl_zuege = len(own_valid_cells)
-
         posi = self.cell
 
         bedrohungen = 0
-        schlagb_figuren = 0
+        schlagb_figuren_score = 0
 
         for foreign_piece in self.board.iterate_cells_with_pieces(not self.is_white()):
 
@@ -91,12 +89,12 @@ class Piece:
             for cell in foreign_valid_cells:
                 if cell[0] == posi[0] and cell[1] == posi[1]:
                     bedrohungen += 1
-                    break
 
             for cell in own_valid_cells:
                 if cell[0] == foreign_cell[0] and cell[1] == foreign_cell[1]:
-                    schlagb_figuren += 1
-                    break
+                    if self.get_value() < foreign_piece.get_value():
+                        schlagb_figuren_score += foreign_piece.get_value()
+
 
         def berechne_anzahl_gedeckt():
             anzahl = 0
@@ -107,23 +105,19 @@ class Piece:
                 for cell in piece.get_valid_cells():
                     if cell[0] == posi[0] and cell[1] == posi[1]:
                         anzahl += 1
-                        break  # Jede Figur kann uns nur einmal decken
 
             self.board.set_cell(posi, self)
             return anzahl
 
         # Berechnung
-        score = piece_value
 
-        sicherheit = bedrohungen - berechne_anzahl_gedeckt()
-        if sicherheit > 0:
-            score -= piece_value * sicherheit
-        else:
-            score += piece_value * abs(sicherheit) * 0.3
+        sicherheit = berechne_anzahl_gedeckt() - bedrohungen
 
-        score += schlagb_figuren + 0.1 * anzahl_zuege
+        anzahl_zuege = len(own_valid_cells)
 
-        return score
+        return (
+            piece_value + sicherheit + anzahl_zuege + schlagb_figuren_score
+        )
 
 
     def get_valid_cells(self):
