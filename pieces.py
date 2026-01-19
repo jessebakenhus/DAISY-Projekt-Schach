@@ -73,7 +73,6 @@ class Piece:
         """
         # return piece_value
 
-
         own_valid_cells = self.get_valid_cells()
 
         posi = self.cell
@@ -106,7 +105,7 @@ class Piece:
 
                         for cell in own_valid_cells:
                             if cell[0] == foreign_cell[0] and cell[1] == foreign_cell[1]:
-                                if self.get_value() < piece.get_value():
+                                if self.get_value() < piece.get_value() and piece.get_value() != 1e6:
                                     schlagb_figuren_score = 1e3
 
         # Berechnung
