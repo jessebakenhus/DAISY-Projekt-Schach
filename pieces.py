@@ -90,9 +90,15 @@ class Piece:
 
                     if piece.is_white() == self.white:
 
+                        self.board.set_cell(self.cell, piece=None)
+
                         for cell in piece.get_valid_cells():
                             if cell[0] == posi[0] and cell[1] == posi[1]:
                                 anzahl_gedeckt += 1
+
+                        self.board.set_cell(self.cell, piece=self)
+
+
 
                     else:
 
